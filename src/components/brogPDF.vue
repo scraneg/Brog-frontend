@@ -1,5 +1,5 @@
 <template>
-  <div class="pdf-touch-box">
+  <div class="pdf-touch-box" @mouseup="onSelect">
 
     <div
         v-show="!loading"
@@ -102,6 +102,22 @@ export default {
     this.init()
   },
   methods: {
+    onSelect(e) {
+      const selectedText = window.getSelection().toString();
+      if (selectedText.length === 0) {
+        return;
+      }
+      for (let i = 0; i < 4; i++) {
+        const id = e.path[i].id;
+        if (id.indexOf("page-") >= 0) {
+          console.log(id[id.length - 1], selectedText)
+          return {
+            pageNum: id[id.length - 1],
+            selectedText
+          }
+        }
+      }
+    },
     async init() {
       //禁止下拉刷新
       document.addEventListener(
@@ -109,7 +125,7 @@ export default {
           function (ev) {
             ev.preventDefault()
           },
-          { passive: false }
+          {passive: false}
       )
       this.boxEl = document.querySelector('.pdf-touch-box')
       this.wrapEl = document.getElementsByClassName('pdf-canvas-wrap')[0]
@@ -232,7 +248,7 @@ export default {
         PDFJS.getDocument(that.src).promise.then(
             function (pdfDoc_) {
               pdfDoc = pdfDoc_
-              that.totallPage = pdfDoc_.numPages;
+              that.totallPage = 5;
               that.loading = false
               resolve('success')
             },
