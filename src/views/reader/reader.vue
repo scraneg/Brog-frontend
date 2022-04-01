@@ -11,7 +11,7 @@
 
 <script>
 import main from "./main";
-import aside from "./aside";
+import aside from "../index/aside";
 
 export default {
   name: "reader",

@@ -2,9 +2,18 @@
   <el-space direction="vertical" :size="70" class="main">
     <el-avatar src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
     <div>{username}</div>
-    <el-button class="button"><el-badge value="5"/>阅读历史</el-button>
-    <el-button class="button"><el-badge value="5"/>我的笔记</el-button>
-    <el-button class="button"><el-badge value="5"/>消息</el-button>
+    <el-button class="button" @click="$router.push('bookshelf')">
+      <el-badge value="5"/>
+      我的书架
+    </el-button>
+    <el-button class="button" @click="$router.push('notebook')">
+      <el-badge value="5"/>
+      我的笔记
+    </el-button>
+    <el-button class="button" @click="$router.push('community')">
+      <el-badge value="5"/>
+      社区
+    </el-button>
   </el-space>
 </template>
 
