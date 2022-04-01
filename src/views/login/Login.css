@@ -1,0 +1,254 @@
+#body {
+    /* 弹性盒子 垂直居中	 */
+    align-items: center;
+    /* 背景颜色为自定义属性 --white	 */
+    background-color: white;
+    /* 	背景固定。即使一个元素拥有滚动机制，背景也不会随着元素的内容滚动。 */
+    background-attachment: fixed;
+    /* 	图片居中 */
+    background-position: center;
+    /* 	background-repeat定义背景图像的重复方式，no-repeat背景图像将仅显示一次 */
+    background-repeat: no-repeat;
+    /* 把背景图片放大到适合元素容器的尺寸	 */
+    background-size: cover;
+    /* 网格布局	 */
+    display: grid;
+    /* 设置height:100vh，能够保证元素无论是否有没有内容，高度都等于屏幕高度。	 */
+    height: 100vh;
+    /* 沿着对齐容器的中心对齐。	 */
+    place-items: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    -ms-background-size: cover;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 100%;
+}
+
+div,
+span,
+h1,
+h2,
+form {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: rgb(0, 0, 0);
+    letter-spacing: 2px; /*字间距*/
+    /*text-align: center;*/
+    /*font-style: italic;设置为斜体*/
+    margin: 0cm 1cm 0.01cm 1cm;
+    text-align: center;
+}
+
+.sub-main-w3 {
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -moz-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+
+.sub-main-w3 form {
+
+    align-items: center;
+    width: 500px;
+    height: 520px;
+    margin: 0 5vw;
+    padding: 3.5vw;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-left: 1.5px solid #000000; /*增加边框*/
+    border-right: 1.5px solid #000000;
+    border-radius: 30px 30px 30px 30px; /*我们都知道border-radius后面如果是4个值的话,依次代表的是左上角、右上角、右下角、左下角。就这样使边框有弯曲*/
+}
+
+.wrapper {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 35px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.form-style-agile {
+    margin-bottom: 1.9em;
+    flex-basis: 100%;
+    -webkit-flex-basis: 100%;
+}
+
+.sub-main-w3 label {
+    font-size: 14px;
+    color: #fff;
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 12px;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+}
+
+.sub-main-w3 label i {
+    font-size: 15px;
+    margin-left: 5px;
+    color: #03A9F4;
+    border-radius: 50%;
+    line-height: 1.9;
+    text-align: center;
+}
+
+.form-style-agile input[type="text"],
+.form-style-agile input[type="password"] {
+    width: 100%;
+    color: #000;
+    outline: none;
+    font-size: 14px;
+    letter-spacing: 1px;
+    padding: 15px 15px;
+    box-sizing: border-box;
+    border: none;
+    border-top: 1.5px solid #000000; /*增加边框*/
+    border-bottom: 1.5px solid #000000;
+    border-radius: 10px 10px 10px 10px; /*我们都知道border-radius后面如果是4个值的话,依次代表的是左上角、右上角、右下角、左下角。就这样使边框有弯曲*/
+    background: #fff;
+}
+
+.forms-gds {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+}
+
+.sub-main-w3 button[type="submit"] {
+    background: #ffffff;
+    border: none;
+    padding: 13px 0;
+    margin-top: 80px;
+    margin-right: 40px;
+    outline: none;
+    width: 130px;
+    font-size: 15px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: 0.5s all;
+    border-left: 1.5px solid #000000;
+    border-right: 1.5px solid #000000;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.sub-main-w3 button[type="submit"]:hover {
+    background: rgb(167, 159, 159);
+    -webkit-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
+    transition: 0.5s all;
+}
+
+.form__title {
+    /* 字体粗细 */
+    font-size: 50%;
+    margin: 0;
+    margin-bottom: 0.12rem; /*下边距*/
+    text-align: center;
+}
+
+.form__title1 {
+    /* 字体粗细 */
+    font-size: 30%;
+    margin: 0;
+    margin-bottom: 1rem; /*下边距*/
+    text-align: center;
+}
+
+.wthree-text {
+    width: 100%;
+}
+
+.wthree-text ul li:nth-child(1) {
+    float: left;
+}
+
+.wthree-text ul li:nth-child(2) {
+    float: right;
+}
+
+.wthree-text ul li {
+    display: inline-block;
+}
+
+.wthree-text ul li a {
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+
+@media (max-width: 1920px) {
+    h1 {
+        font-size: 3.5vw;
+    }
+}
+
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 4.5vw;
+    }
+}
+
+@media (max-width: 800px) {
+    h1 {
+        font-size: 2.6em;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2.3em;
+    }
+
+    .sub-main-w3 form {
+        padding: 7.5vw;
+    }
+}
+
+@media (max-width: 414px) {
+    .form-style-agile input[type="text"],
+    .form-style-agile input[type="password"] {
+        font-size: 13px;
+        padding: 13px 15px;
+    }
+
+    .wthree-text ul li:nth-child(1),
+    .wthree-text ul li:nth-child(2) {
+        float: none;
+    }
+
+    .wthree-text ul li:nth-child(2) {
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 320px) {
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .sub-main-w3 form {
+        padding: 25px 14px;
+    }
+}

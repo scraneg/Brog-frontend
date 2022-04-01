@@ -13,5 +13,5 @@ const app = createApp(App)
 //app.config.unwrapInjectedRef = true
 app.use(router)
 app.use(ElementPlus)
-app.config.globalProperties.$axios = instance
+app.provide('axios', instance)
 app.mount('#app')

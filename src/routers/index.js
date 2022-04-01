@@ -3,7 +3,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 const routes = [
     {
         path: '/',
-        component: () => import('@/views/index'),
+        component: () => import('@/views/index/Index'),
         children: [
             {
                 path: '/notebook',
@@ -21,7 +21,6 @@ const routes = [
     },
     {
         path: '/login',
-        name: 'login',
         component: () => import('@/views/login/Login')
     },
     {
@@ -31,6 +30,10 @@ const routes = [
     {
         path: '/reader',
         component: () => import('@/views/reader/Reader')
+    },
+    {
+        path: '/retrieve',
+        component: () => import('@/views/retrieve/Retrieve')
     }
 ]
 
