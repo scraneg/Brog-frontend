@@ -3,8 +3,15 @@
 </template>
 
 <script>
+import {onMounted} from "vue";
+
 export default {
-  name: "bookshelf"
+  name: "bookshelf",
+  setup() {
+    onMounted(() => {
+      document.title = "我的书架"
+    })
+  }
 }
 </script>
 

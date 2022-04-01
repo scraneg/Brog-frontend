@@ -11,14 +11,17 @@
 
 <script>
 import main from "./main";
+import {onMounted} from "vue";
 
 export default {
   name: "reader",
-  components:{
-    'reader-main':main,
+  components: {
+    'reader-main': main,
   },
-  mounted() {
-    document.title='填写标题'
+  setup() {
+    onMounted(() => {
+      document.title = "填写标题"
+    })
   }
 }
 </script>

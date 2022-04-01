@@ -26,11 +26,16 @@
 </template>
 
 <script>
+import {onMounted, ref} from "vue";
+
 export default {
   name: "notebook",
   setup() {
+    onMounted(() => {
+      document.title = "我的笔记"
+    })
     return {
-      notes: [{
+      notes: ref([{
         id: 1,
         title: '机器学习算法笔记1',
         themes: ['支持向量机', '拉格朗日乘子法', 'SMO算法'],
@@ -54,7 +59,7 @@ export default {
           title: '统计学习方法（第2版）'
         }],
         contributor: 'Broger'
-      }]
+      }])
     }
   }
 }
