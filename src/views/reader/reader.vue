@@ -1,8 +1,8 @@
 <template>
   <el-container>
-    <el-aside style="padding-bottom: 20px;padding-top: 20px">
-      <reader-aside/>
-    </el-aside>
+    <el-main>
+      <reader-main/>
+    </el-main>
     <el-main>
       <reader-main/>
     </el-main>
@@ -11,12 +11,10 @@
 
 <script>
 import main from "./main";
-import aside from "../index/aside";
 
 export default {
   name: "reader",
   components:{
-    'reader-aside':aside,
     'reader-main':main,
   },
   mounted() {
