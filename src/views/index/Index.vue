@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import header from "@/views/index/header";
-import aside from "@/views/index/aside";
+import header from "@/views/index/Header";
+import aside from "@/views/index/Aside";
 
 export default {
   components: {

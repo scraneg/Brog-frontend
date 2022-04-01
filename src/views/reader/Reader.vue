@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import main from "./main";
+import main from "./Main";
 import {onMounted} from "vue";
 
 export default {

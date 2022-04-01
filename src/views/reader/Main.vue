@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import brogPDF from "@/views/reader/brogPDF";
+import brogPDF from "@/views/reader/BrogPDF";
 export default {
   components:{
     brogPDF
