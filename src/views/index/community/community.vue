@@ -1,9 +1,15 @@
 <template>
   <div class="community">
-    <el-input v-model="searchContent" placeholder="在社区中搜索"></el-input>
-    <el-upload>
-      <el-button>上传资源👆</el-button>
-    </el-upload>
+    <el-row justify="space-between">
+      <el-col :span="16">
+        <el-input v-model="searchContent" placeholder="在社区中搜索"></el-input>
+      </el-col>
+      <el-col :span="4">
+        <el-upload>
+          <el-button round type="primary">上传资源👆</el-button>
+        </el-upload>
+      </el-col>
+    </el-row>
   </div>
 </template>
 

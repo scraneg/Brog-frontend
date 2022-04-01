@@ -12,7 +12,7 @@
           <div>
             来自图书:
             <template v-for="(book,index) in note.books" :key="book.title">
-              <router-link :to="'/reader?id='+book.id">{{ book.title }}</router-link>
+              <router-link :to="`/reader?id=${book.id}`">{{ book.title }}</router-link>
               {{ index + 1 === note.books.length ? null : '、' }}
             </template>
           </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {onMounted, reactive} from "vue";
 
 export default {
   name: "notebook",
@@ -35,7 +35,7 @@ export default {
       document.title = "我的笔记"
     })
     return {
-      notes: ref([{
+      notes: reactive([{
         id: 1,
         title: '机器学习算法笔记1',
         themes: ['支持向量机', '拉格朗日乘子法', 'SMO算法'],
