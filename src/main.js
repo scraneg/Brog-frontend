@@ -7,7 +7,7 @@ import axios from 'axios'
 
 axios.defaults.withCredentials = true;
 const instance = axios.create({
-    baseURL:""
+    baseURL: "brog.rainspace.cn:8080"
 })
 const app = createApp(App)
 //app.config.unwrapInjectedRef = true
