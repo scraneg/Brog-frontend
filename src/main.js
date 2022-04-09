@@ -5,10 +5,11 @@ import 'element-plus/dist/index.css'
 import router from './routers/index'
 import axios from 'axios'
 
-axios.defaults.withCredentials = true;
+//axios.defaults.withCredentials = true;
 const instance = axios.create({
-    baseURL:""
+    baseURL:"http://localhost:8000"
 })
+instance.defaults.withCredentials = true;
 const app = createApp(App)
 //app.config.unwrapInjectedRef = true
 app.use(router)

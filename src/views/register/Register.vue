@@ -42,7 +42,7 @@ export default {
   name: 'register',
   setup() {
     const axios = inject('axios');
-    const router = useRouter()
+    const router = useRouter();
     const registerCredential = reactive({
       username: "",
       email: "",

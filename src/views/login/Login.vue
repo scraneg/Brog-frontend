@@ -38,13 +38,15 @@
 </template>
 
 <script>
-import {inject, reactive} from "vue";
-import {ElMessage} from 'element-plus'
+import {inject, reactive, onMounted} from "vue";
+import {useRouter} from 'vue-router';
+import {ElMessage} from 'element-plus';
 
 export default {
   name: "login",
   setup() {
     const axios = inject("axios");
+    const router = useRouter();
 
     const loginCredential = reactive({
       username: "",
@@ -52,15 +54,30 @@ export default {
       rememberMe: false
     });
 
+    onMounted(() => {
+      let username_local = localStorage.getItem('username');
+      let password_local = localStorage.getItem('password');
+      if(username_local){
+        loginCredential.username = username_local;
+      }
+      if(password_local){
+        loginCredential.password = password_local;
+      }
+    });
+
     /** “登陆系统”按钮Click事件处理函数 */
     function onLogin() {
+      //axios.withCredentials = true;
       let reqBody = {'name': loginCredential.username, 'pwd': loginCredential.password};
 
       axios.post('/auth/login', reqBody).then((res) => {
         let resBody = res.data;
         if (resBody.status === 'success') {
-          //TODO 若用户勾选了记住我则将账户密码保存到localStorage
-          //TODO 跳转到系统主界面
+          if(loginCredential.rememberMe){
+            localStorage.setItem('username', loginCredential.username);
+            localStorage.setItem('password', loginCredential.password);
+          }
+          router.push('/');
         } else {
           ElMessage.error('登陆失败！')
         }
