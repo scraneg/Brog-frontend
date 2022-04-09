@@ -1,6 +1,5 @@
 <template>
   <div class="pdf-touch-box" @mouseup="onSelect">
-
     <div
         v-show="!loading"
         class="pdf-canvas-wrap"
@@ -17,11 +16,9 @@
 
 <script>
 import * as PDFJS from 'pdfjs-dist/legacy/build/pdf'
-console.log(PDFJS)
 
 import { TextLayerBuilder, EventBus } from 'pdfjs-dist/legacy/web/pdf_viewer'
 import 'pdfjs-dist/legacy/web/pdf_viewer.css'
-console.log(TextLayerBuilder)
 
 // 本地
 // window.pdfjsWorker = require("pdfjs-dist/build/pdf.worker.js");
@@ -59,6 +56,7 @@ let isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent) || (platform === 'MacInt
   }
 })()
 import AlloyFinger from 'alloyfinger'
+import {readonly, ref} from "vue";
 //包装一下 不然 eslint 报警告
 class FingerTouch {
   constructor(element, options) {
@@ -68,6 +66,7 @@ class FingerTouch {
 }
 let pdfDoc;
 export default {
+  inject: ['bus'],
   data() {
     return {
       src: '/a.pdf',
@@ -103,6 +102,9 @@ export default {
   },
   methods: {
     onSelect(e) {
+      if (!this.bus.isWatching || e.path[0].localName !== "span" || e.path[1].className !== "textLayer") {
+        return
+      }
       const selectedText = window.getSelection().toString();
       if (selectedText.length === 0) {
         return;
@@ -110,11 +112,7 @@ export default {
       for (let i = 0; i < 4; i++) {
         const id = e.path[i].id;
         if (id.indexOf("page-") >= 0) {
-          console.log(id[id.length - 1], selectedText)
-          return {
-            pageNum: id[id.length - 1],
-            selectedText
-          }
+          this.bus.selectedText = readonly(ref(selectedText))
         }
       }
     },
@@ -178,7 +176,6 @@ export default {
     },
     scaleCanvas(scale) {
       this.lastStyleScale = scale
-      console.log(scale)
       // 改变 viewport 大小
       this.viewport = this.viewport.clone({
         scale: (this.pageScale * CSS_UNITS * scale).toFixed(3)
@@ -204,7 +201,6 @@ export default {
       // 如果是变小 变化不大时 清晰度影响更小
       if (isNarrow) curScaleInterval = scaleInterval * 2
 
-      console.log('scaleRenderAll', curScaleInterval, curInterval)
       // 变化很小的时候就不计时重新渲染了 清晰度影响不大 1.1 - 1 = 0.10000000000000009
       if (curInterval <= curScaleInterval) return
 

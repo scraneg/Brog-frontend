@@ -14,7 +14,6 @@ export default {
   components: {
     HomeFilled
   },
-  name: "header"
 }
 </script>
 

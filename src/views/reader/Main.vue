@@ -1,16 +1,21 @@
 <template>
   <div class="main" style="font-size: x-large">
-    <span>浏览记录</span>
-    <el-image style="width: 70px;height: 40px" src="https://cloud.rainspace.cn/api/v3/file/get/2795/QQ%E5%9B%BE%E7%89%8720220126002522.png?sign=sNlx8hYjW_420YBvM-PCXkqYw2jYI3G-g2uJChKJ3us%3D%3A0"></el-image>
-    <brogPDF></brogPDF>
+    <span>阅读器</span>
+    <el-image style="width: 70px;height: 40px"
+              src="https://cloud.rainspace.cn/api/v3/file/get/2795/QQ%E5%9B%BE%E7%89%8720220126002522.png?sign=sNlx8hYjW_420YBvM-PCXkqYw2jYI3G-g2uJChKJ3us%3D%3A0"></el-image>
+    <el-scrollbar style="padding: 5%;height: 85%">
+      <brogPDF></brogPDF>
+    </el-scrollbar>
   </div>
 </template>
 
 <script>
 import brogPDF from "@/views/reader/BrogPDF";
 export default {
-  components:{
+  components: {
     brogPDF
+  },
+  setup() {
   }
 }
 </script>

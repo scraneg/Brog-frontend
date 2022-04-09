@@ -1,26 +1,35 @@
 <template>
   <el-container>
-    <el-main>
-      <reader-main/>
-    </el-main>
-    <el-main>
-      <reader-main/>
-    </el-main>
+    <el-header style="background-color: #ccd1ee;">
+      <reader-header/>
+    </el-header>
+    <el-container>
+      <el-main>
+        <reader-main/>
+      </el-main>
+      <el-main>
+        <reader-main/>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
 <script>
-import main from "./Main";
-import {onMounted} from "vue";
+import Main from "./Main";
+import Header from "./Header"
+import {provide, onMounted, reactive} from "vue";
 
 export default {
   name: "reader",
   components: {
-    'reader-main': main,
+    'reader-main': Main,
+    'reader-header': Header,
   },
   setup() {
+    const bus = reactive({})
+    provide("bus", bus)
     onMounted(() => {
-      document.title = "填写标题"
+      document.title = "阅读器"
     })
   }
 }
