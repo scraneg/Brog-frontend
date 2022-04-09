@@ -244,7 +244,7 @@ export default {
         PDFJS.getDocument(that.src).promise.then(
             function (pdfDoc_) {
               pdfDoc = pdfDoc_
-              that.totallPage = 5;
+              that.totallPage = 30;
               that.loading = false
               resolve('success')
             },

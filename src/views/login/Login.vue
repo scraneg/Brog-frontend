@@ -79,7 +79,7 @@ export default {
           }
           router.push('/');
         } else {
-          ElMessage.error('登陆失败！')
+          ElMessage.error('登录失败！')
         }
       }).catch((error) => {
         console.log(error);
