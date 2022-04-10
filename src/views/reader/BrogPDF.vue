@@ -57,7 +57,6 @@ let isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent) || (platform === 'MacInt
 })()
 import AlloyFinger from 'alloyfinger'
 import {readonly, ref} from "vue";
-import {ElMessage} from 'element-plus';
 //包装一下 不然 eslint 报警告
 class FingerTouch {
   constructor(element, options) {
@@ -67,11 +66,10 @@ class FingerTouch {
 }
 let pdfDoc;
 export default {
-  inject: ['bus', 'axios'],
-  props: ['type'],
+  inject: ['bus'],
+  props: ['type', 'src'],
   data() {
     return {
-      src: '',
       loading: true,
       pdfDoc: null,
       boxEl: null,
@@ -118,38 +116,7 @@ export default {
         }
       }
     },
-    async getReaderPDF(){
-      let status = await this.getPDFPath();
-      console.log(status);
-    },
-    getPDFPath(){
-      this.axios.withCredentials = true;
-      if(this.bus.main_pdf != undefined){
-        let that = this;
-        return new Promise((resolve, reject) => {
-          this.axios.get('/file/get_file_path', {
-            params: {
-              bid: this.bus.main_pdf
-            }
-          }).then((res) => {
-            let res_body = res.data;
-            if (res_body.status === 'success') {
-              that.src = 'http://' + res_body.file_obj.file_path;
-              resolve(true);
-            } else {
-              console.log(res_body);
-              resolve(false);
-              ElMessage.error('获取书籍路径错误！');
-            }
-          }).catch((error) => {
-            console.log(error);
-            reject(error);
-          })
-        })
-      }
-    },
     async init() {
-      await this.getReaderPDF();
       //禁止下拉刷新
       document.addEventListener(
           'touchmove',
@@ -277,7 +244,7 @@ export default {
         PDFJS.getDocument(that.src).promise.then(
             function (pdfDoc_) {
               pdfDoc = pdfDoc_
-              that.totallPage = 30;
+              that.totallPage = Math.min(30, pdfDoc.numPages);
               that.loading = false
               resolve('success')
             },
