@@ -1,7 +1,7 @@
 <template>
   <el-space direction="vertical" :size="70" class="main">
     <el-avatar src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
-    <div>{username}</div>
+    <div>{{username}}</div>
     <el-button class="button" @click.prevent="$router.push('bookshelf')">
       <el-badge value="5"/>
       我的书架
@@ -18,8 +18,40 @@
 </template>
 
 <script>
+import {onMounted, ref, inject} from "vue";
+import {ElMessage} from 'element-plus'
 
 export default {
+  name: "aside",
+  setup(){
+    const axios = inject("axios");
+    axios.defaults.withCredentials = true;
+
+    const username = ref("");
+
+    onMounted(() => {
+      getUsername();
+    });
+
+    function getUsername(){
+      axios.get('/auth/profile').then((res) => {
+        let res_body = res.data;
+        if (res_body.status === 'success') {
+          let profile = res_body.profile_obj;
+          username.value = profile.name;
+        } else {
+          console.log(res_body);
+          ElMessage.error('获取用户信息错误！')
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
+    }
+
+    return {
+      username
+    }
+  }
 }
 </script>
 

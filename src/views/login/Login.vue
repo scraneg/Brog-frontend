@@ -47,6 +47,7 @@ export default {
   setup() {
     const axios = inject("axios");
     const router = useRouter();
+    axios.withCredentials = true;
 
     const loginCredential = reactive({
       username: "",

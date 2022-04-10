@@ -54,7 +54,7 @@ export default {
     /** “发送验证邮件”按钮Click事件处理函数 */
     function sendVerifyEmail() {
       axios.get('/auth/email_captcha', {
-        param: {
+        params: {
           email: registerCredential.email
         }
       }).then((res) => {
@@ -62,6 +62,7 @@ export default {
         if (res_body.status === 'success') {
           ElMessage.success('邮箱验证码发送成功！')
         } else {
+          console.log(res_body);
           ElMessage.error('邮箱验证码发送失败！')
         }
       }).catch((error) => {
@@ -72,13 +73,16 @@ export default {
     /** “注册”按钮Click事件处理函数 */
     function onRegister() {
       let req_body = {
-        captcha: registerCredential.captcha,
         'name': registerCredential.username,
         'email': registerCredential.email,
         'pwd': registerCredential.password
       };
 
-      axios.post('/auth/register', req_body).then((res) => {
+      axios.post('/auth/register', req_body, {
+        params: {
+          captcha: registerCredential.captcha
+        }
+      }).then((res) => {
         let resBody = res.data;
         if (resBody.status === 'success') {
           router.push('/profile_registry');

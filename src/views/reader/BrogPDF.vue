@@ -57,6 +57,7 @@ let isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent) || (platform === 'MacInt
 })()
 import AlloyFinger from 'alloyfinger'
 import {readonly, ref} from "vue";
+import {ElMessage} from 'element-plus';
 //包装一下 不然 eslint 报警告
 class FingerTouch {
   constructor(element, options) {
@@ -66,10 +67,11 @@ class FingerTouch {
 }
 let pdfDoc;
 export default {
-  inject: ['bus'],
+  inject: ['bus', 'axios'],
+  props: ['type'],
   data() {
     return {
-      src: '/a.pdf',
+      src: '',
       loading: true,
       pdfDoc: null,
       boxEl: null,
@@ -112,11 +114,42 @@ export default {
       for (let i = 0; i < 4; i++) {
         const id = e.path[i].id;
         if (id.indexOf("page-") >= 0) {
-          this.bus.selectedText = readonly(ref(selectedText))
+          this.bus.selectedText = readonly(ref(selectedText));
         }
       }
     },
+    async getReaderPDF(){
+      let status = await this.getPDFPath();
+      console.log(status);
+    },
+    getPDFPath(){
+      this.axios.withCredentials = true;
+      if(this.bus.main_pdf != undefined){
+        let that = this;
+        return new Promise((resolve, reject) => {
+          this.axios.get('/file/get_file_path', {
+            params: {
+              bid: this.bus.main_pdf
+            }
+          }).then((res) => {
+            let res_body = res.data;
+            if (res_body.status === 'success') {
+              that.src = 'http://' + res_body.file_obj.file_path;
+              resolve(true);
+            } else {
+              console.log(res_body);
+              resolve(false);
+              ElMessage.error('获取书籍路径错误！');
+            }
+          }).catch((error) => {
+            console.log(error);
+            reject(error);
+          })
+        })
+      }
+    },
     async init() {
+      await this.getReaderPDF();
       //禁止下拉刷新
       document.addEventListener(
           'touchmove',
@@ -287,7 +320,8 @@ export default {
       pdfDoc.getPage(pageNum).then(function (page) {
         if (that.isFirstTimeRender) that.initView(page, ctx)
 
-        if (pageNum === 1) that.getCanvasCSSWH()
+        //if (pageNum === 1) that.getCanvasCSSWH()
+        that.getCanvasCSSWH()
 
         that.setCanvasCSSWh.call(that, canvas)
         let renderTask = that.pageRender.call(that, page, ctx)
