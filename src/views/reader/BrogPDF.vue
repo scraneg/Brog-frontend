@@ -1,8 +1,8 @@
 <template>
-  <div class="pdf-touch-box" @mouseup="onSelect">
+  <div :class="`pdf-touch-box-${this.type}`" @mouseup="onSelect">
     <div
         v-show="!loading"
-        class="pdf-canvas-wrap"
+        :class="`pdf-canvas-wrap-${this.type}`"
         :style="{
         top: viewTop + 'px',
         left: viewLeft + 'px',
@@ -10,7 +10,7 @@
         height: viewHeight + 'px'
       }"
     ></div>
-    <p class="pdf-canvas-tips" v-show="loading">正在加载...</p>
+    <p v-show="loading" :class="`pdf-canvas-tips-${this.type}`">正在加载...</p>
   </div>
 </template>
 
@@ -158,8 +158,8 @@ export default {
           },
           {passive: false}
       )
-      this.boxEl = document.querySelector('.pdf-touch-box')
-      this.wrapEl = document.getElementsByClassName('pdf-canvas-wrap')[0]
+      this.boxEl = document.querySelector(`.pdf-touch-box-${this.type}`)
+      this.wrapEl = document.getElementsByClassName(`pdf-canvas-wrap-${this.type}`)[0]
       this.btnWidth = this.areaWidth = this.boxEl.clientWidth
 
       const loadingState = await this.getPDF()
@@ -246,7 +246,7 @@ export default {
         let newCtx = newCanvas.getContext('2d', {
           alpha: false
         })
-        newCanvas.setAttribute('id', `pdf-canvas${pageNum}`)
+        newCanvas.setAttribute('id', `pdf-canvas${pageNum}-${this.type}`)
 
         this.canvasCtxs[pageNum - 1] = newCtx
 
@@ -293,7 +293,7 @@ export default {
     initRenderOneByOne() {
       for (let pageNum = 1; pageNum <= this.totallPage; pageNum++) {
         let canvas = document.createElement('canvas')
-        canvas.setAttribute('id', `pdf-canvas${pageNum}`)
+        canvas.setAttribute('id', `pdf-canvas${pageNum}-${this.type}`)
         canvas.setAttribute('class', `pdfcanvas`)
         // alpha 设定 canvas 背景总是不透明，可以加快浏览器绘制透明的内容和图片 初始化出来 canvas 为黑色背景
         // 实际上 导致 重新渲染的时候 闪黑屏
@@ -306,7 +306,7 @@ export default {
         //  this.wrapEl.appendChild(canvas);
 
         let pageDiv = document.createElement('div')
-        pageDiv.setAttribute('id', 'page-' + pageNum)
+        pageDiv.setAttribute('id', `page-${pageNum}-${this.type}`)
         pageDiv.setAttribute('style', 'position: relative;')
         this.wrapEl.appendChild(pageDiv)
         pageDiv.appendChild(canvas)
@@ -503,59 +503,16 @@ export default {
 </script>
 
 <style scoped>
-.pdf-touch-box {
+.pdf-touch-box-main,
+.pdf-touch-box-ref {
   padding: 9px;
   width: calc(100% - 18px);
   height: calc(100% - 18px);
   position: relative;
 }
-.scale-btn-box {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 44px;
-  display: flex;
-  justify-content: space-around;
-  z-index: 99;
-}
-.scale-btn-box::after {
-  content: '';
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background: #fff;
-  top: 0;
-  left: 0;
-  filter: blur(18px);
-  opacity: 0.8;
-}
-.scale-btn {
-  position: relative;
-  z-index: 2;
-  width: 25%;
-  height: 100%;
-  display: inline-block;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #dcdfe6;
-  color: #606266;
-  -webkit-appearance: none;
-  text-align: center;
-  box-sizing: border-box;
-  outline: none;
-  margin: 0;
-  transition: 0.1s;
-  font-weight: 500;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  padding: 12px 20px;
-  font-size: 14px;
-  border-radius: 4px;
-}
-.pdf-canvas-wrap {
+
+.pdf-canvas-wrap-main,
+.pdf-canvas-wrap-ref {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -564,7 +521,9 @@ export default {
   padding-top: 9px;
   position: absolute;
 }
-.pdf-canvas-tips {
+
+.pdf-canvas-tips-main,
+.pdf-canvas-tips-ref {
   margin-top: 44px;
 }
 </style>
