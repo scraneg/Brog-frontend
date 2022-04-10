@@ -67,7 +67,6 @@ export default {
 
     /** “登陆系统”按钮Click事件处理函数 */
     function onLogin() {
-      //axios.withCredentials = true;
       let reqBody = {'name': loginCredential.username, 'pwd': loginCredential.password};
 
       axios.post('/auth/login', reqBody).then((res) => {
