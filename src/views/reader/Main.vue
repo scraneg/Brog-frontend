@@ -1,9 +1,16 @@
 <template>
-  <div class="main" style="font-size: x-large">
-    <el-scrollbar style="padding: 5%;height: 85%">
-      <brogPDF :key="src" :src="src" :type="type"></brogPDF>
-    </el-scrollbar>
-  </div>
+  <el-container style="height: 100%">
+    <el-main class="pdf-box">
+      <el-scrollbar>
+        <brogPDF :key="src" :src="src" type="main"></brogPDF>
+      </el-scrollbar>
+    </el-main>
+    <el-main class="pdf-box">
+      <el-scrollbar>
+        <brogPDF :key="src" :src="src" type="ref"></brogPDF>
+      </el-scrollbar>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -61,14 +68,11 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  width: 100%;
+.pdf-box {
   height: 100%;
   color: #000;
   outline: none;
-  font-size: 14px;
-  letter-spacing: 1px;
-  padding: 15px 15px;
+  margin: 0 2%;
   box-sizing: border-box;
   border: none;
   border-top: 1.5px solid #000000; /*增加边框*/

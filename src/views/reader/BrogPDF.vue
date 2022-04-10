@@ -151,7 +151,7 @@ export default {
     },
     scaleEvent(scale) {
       // 渲染中 不让缩放 也不让重绘
-      if (this.pageRenderedNum != this.totallPage || this.totallPage === 0) return
+      if (this.pageRenderedNum !== this.totallPage || this.totallPage === 0) return
 
       // 没在渲染中 随意缩放
       this.scaleCanvas(scale)

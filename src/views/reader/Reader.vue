@@ -3,14 +3,9 @@
     <el-header style="background-color: #ccd1ee;">
       <reader-header/>
     </el-header>
-    <el-container>
-      <el-main>
-        <reader-main type="main"/>
-      </el-main>
-      <el-main>
-        <reader-main type="ref"/>
-      </el-main>
-    </el-container>
+    <el-main>
+      <reader-main/>
+    </el-main>
   </el-container>
 </template>
 
