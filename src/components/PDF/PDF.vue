@@ -17,54 +17,19 @@
 <script>
 import * as PDFJS from 'pdfjs-dist/legacy/build/pdf'
 
-import {TextLayerBuilder, EventBus} from 'pdfjs-dist/legacy/web/pdf_viewer'
+import {EventBus, TextLayerBuilder} from 'pdfjs-dist/legacy/web/pdf_viewer'
 import 'pdfjs-dist/legacy/web/pdf_viewer.css'
+import {readonly, ref} from "vue";
 
 // 本地
 window.pdfjsWorker = require("pdfjs-dist/build/pdf.worker.js");
 
-// cdn 2.8.335  2.6.347 2.5.207
-//PDFJS.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
-
-// https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
-// Requires single file built version of PDF.js -- please run
-// `gulp singlefile` before running the example.
-// const pdfjsLib = require("pdfjs-dist/legacy/build/pdf.js");
-
 const CSS_UNITS = 96.0 / 72.0
 // const PRINT_UNITS = 150 / 72.0;
-
-let userAgent = (typeof navigator !== 'undefined' && navigator.userAgent) || ''
-let platform = (typeof navigator !== 'undefined' && navigator.platform) || ''
-let maxTouchPoints = (typeof navigator !== 'undefined' && navigator.maxTouchPoints) || 1
 
 let maxCanvasPixels = 16777216
 // PDF之外占据的宽度 -18 padding -18减去滚动条宽度（不确定）
 let autoWidth = 36
-//let textLayerTop = 3
-let scaleInterval = 0.05
-
-let isAndroid = /Android/.test(userAgent)
-let isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent) || (platform === 'MacIntel' && maxTouchPoints > 1)
-;(function checkCanvasSizeLimitation() {
-  if (isIOS || isAndroid) {
-    maxCanvasPixels = 5242880
-    autoWidth -= 18
-    //textLayerTop -= 1
-    // 手机上面缩放对清晰度影响更小
-    scaleInterval = 0.4
-  }
-})()
-import AlloyFinger from 'alloyfinger'
-import {readonly, ref} from "vue";
-
-//包装一下 不然 eslint 报警告
-class FingerTouch {
-  constructor(element, options) {
-    Object.assign(this, AlloyFinger.prototype)
-    AlloyFinger.call(this, element, options)
-  }
-}
 
 let pdfDoc;
 export default {
@@ -138,108 +103,6 @@ export default {
         //this.initTouch()
       } else this.boxEl.innerText = loadingState
     },
-    initTouch() {
-      this.alloyFinger = new FingerTouch(this.wrapEl, {})
-      this.alloyFinger.on('pinch', e => {
-        let zoom = e.zoom
-        let curScale = this.lastStyleScale * zoom
-        if (curScale <= this.pageScale / 2 || curScale >= 5) return
-        this.scaleEvent(curScale)
-      })
-
-      this.alloyFinger.on('pressMove', e => {
-        this.viewTop += e.deltaY
-        this.viewLeft += e.deltaX
-      })
-    },
-    scaleEvent(scale) {
-      // 渲染中 不让缩放 也不让重绘
-      if (this.pageRenderedNum !== this.totalPage || this.totalPage === 0) return
-
-      // 没在渲染中 随意缩放
-      this.scaleCanvas(scale)
-
-      // 说明是第一次事件 或重绘完成 开始计时
-      if (this.scaleTimer === null) {
-        this.scaleTimer = this.renderDelayer(666)
-      }
-      //时间间隔内再次触发缩放 重新计时
-      clearTimeout(this.scaleTimer)
-      this.scaleTimer = this.renderDelayer(666)
-    },
-    renderDelayer(interval) {
-      return setTimeout(() => {
-        this.scaleRenderAll()
-        this.scaleTimer = null
-      }, interval)
-    },
-    scaleTopLeft(width, height) {
-      if (Math.abs(this.viewTop) > height / 2) this.viewTop *= 1 / 2
-      if (Math.abs(this.viewLeft) > width / 2) this.viewLeft *= 1 / 2
-    },
-    scaleCanvas(scale) {
-      this.lastStyleScale = scale
-      // 改变 viewport 大小
-      this.viewport = this.viewport.clone({
-        scale: (this.pageScale * CSS_UNITS * scale).toFixed(3)
-      })
-
-      const {styleWidth, styleHeight} = this.getCanvasCSSWH()
-
-      // 计算一下 top left 不然可能会显示到 窗口外面 看不到了
-      this.scaleTopLeft(styleWidth, styleHeight)
-
-      // 改变CSS canvas 会变模糊
-      this.canvasEles.forEach(canvas => {
-        // 不修改 width height 不然会重置 canvas 变空白
-        canvas.style.width = styleWidth + 'px'
-        canvas.style.height = styleHeight + 'px'
-      })
-    },
-    // 使用新渲染的 canvas  替换 缩放过后不清晰的 canvas
-    scaleRenderAll() {
-      let curInterval = Math.abs(this.lastStyleScale - this.lastRerenderScale)
-      let curScaleInterval = scaleInterval
-      let isNarrow = this.lastStyleScale < this.lastRerenderScale
-      // 如果是变小 变化不大时 清晰度影响更小
-      if (isNarrow) curScaleInterval = scaleInterval * 2
-
-      // 变化很小的时候就不计时重新渲染了 清晰度影响不大 1.1 - 1 = 0.10000000000000009
-      if (curInterval <= curScaleInterval) return
-
-      this.lastRerenderScale = this.lastStyleScale
-
-      this.pageRenderedNum = 0
-      const len = this.canvasEles.length
-      for (let pageNum = 1; pageNum <= len; pageNum++) {
-        let newCanvas = document.createElement('canvas')
-        let newCtx = newCanvas.getContext('2d', {
-          alpha: false
-        })
-        newCanvas.setAttribute('id', `pdf-canvas${pageNum}-${this.type}`)
-
-        this.canvasCtxs[pageNum - 1] = newCtx
-
-        let that = this
-        pdfDoc.getPage(pageNum).then(function (page) {
-          that.setCanvasCSSWh.call(that, newCanvas)
-
-          let renderTask = that.pageRender.call(that, page, newCtx)
-
-          renderTask.promise
-              .then(function () {
-                let oldCanvas = that.canvasEles[pageNum - 1]
-                oldCanvas.parentElement.replaceChild(newCanvas, oldCanvas)
-                that.canvasEles[pageNum - 1] = newCanvas
-                that.pageRenderedNum++
-
-                return page.getTextContent()
-              })
-              .then(textContent => that.textRerender.call(that, pageNum, textContent))
-              .catch(e => console.log(e))
-        })
-      }
-    },
 
     getPDF() {
       return new Promise(resolve => {
@@ -250,7 +113,7 @@ export default {
               this.loading = false
               resolve('success')
             },
-            function (reason) {
+            reason => {
               console.log(reason.message)
               this.loading = false
               resolve(reason.name)
@@ -293,17 +156,6 @@ export default {
         this.textRender.call(this, canvas, pageNum, await page.getTextContent())
       })
     },
-    textRerender(pageIndex, textContent) {
-      const oldDiv = this.textEls[pageIndex - 1]
-
-      const newDiv = document.createElement('div')
-      newDiv.setAttribute('class', 'textLayer')
-      //newDiv.setAttribute('style', `top: ${textLayerTop}px`)
-
-      oldDiv.parentElement.replaceChild(newDiv, oldDiv)
-      this.textEls[pageIndex - 1] = newDiv
-      this.renderTextLayer(newDiv, pageIndex, textContent)
-    },
     textRender(canvas, pageIndex, textContent) {
       const textLayerDiv = document.createElement('div')
       textLayerDiv.setAttribute('class', 'textLayer')
@@ -328,12 +180,12 @@ export default {
 
     },
     renderTextLayer(el, index, content) {
-      var textLayer = new TextLayerBuilder({
+      const textLayer = new TextLayerBuilder({
         eventBus: new EventBus(),
         textLayerDiv: el,
         pageIndex: index,
         viewport: this.viewport
-      })
+      });
       textLayer.setTextContent(content)
       textLayer.render()
     },
@@ -352,13 +204,6 @@ export default {
         viewport: this.viewport,
         enableWebGL: false,
       })
-    },
-
-    drawBorder(canvas, ctx) {
-      ctx.save()
-      ctx.fillStyle = 'rgb(255, 255, 255)'
-      ctx.strokeRect(0, 0, canvas.width, canvas.height)
-      ctx.restore()
     },
     getCanvasCSSWH() {
       let outputScale = {
@@ -398,8 +243,8 @@ export default {
         return [x, 1]
       }
 
-      var xinv = 1 / x
-      var limit = 8
+      const xinv = 1 / x;
+      const limit = 8;
 
       if (xinv > limit) {
         return [1, limit]
@@ -407,15 +252,15 @@ export default {
         return [1, xinv]
       }
 
-      var x_ = x > 1 ? xinv : x
-      var a = 0,
+      const x_ = x > 1 ? xinv : x;
+      let a = 0,
           b = 1,
           c = 1,
-          d = 1
+          d = 1;
       // eslint-disable-next-line
       while (true) {
-        var p = a + c,
-            q = b + d
+        const p = a + c,
+            q = b + d;
 
         if (q > limit) {
           break
@@ -430,7 +275,7 @@ export default {
         }
       }
 
-      var result
+      let result;
 
       if (x_ - a / b < c / d - x_) {
         result = x_ === x ? [a, b] : [b, a]
@@ -441,7 +286,7 @@ export default {
       return result
     },
     roundToDivide(x, div) {
-      var r = x % div
+      const r = x % div;
       return r === 0 ? x : Math.round(x - r + div)
     },
 
@@ -461,10 +306,9 @@ export default {
       })
 
       this.pageScale = (this.areaWidth - autoWidth) / this.viewport.width
-      let curViewport = page.getViewport({
+      this.viewport = page.getViewport({
         scale: this.pageScale * CSS_UNITS
       })
-      this.viewport = curViewport
 
       this.isFirstTimeRender = false
     }
