@@ -17,14 +17,14 @@
 <script>
 import * as PDFJS from 'pdfjs-dist/legacy/build/pdf'
 
-import { TextLayerBuilder, EventBus } from 'pdfjs-dist/legacy/web/pdf_viewer'
+import {TextLayerBuilder, EventBus} from 'pdfjs-dist/legacy/web/pdf_viewer'
 import 'pdfjs-dist/legacy/web/pdf_viewer.css'
 
 // 本地
-// window.pdfjsWorker = require("pdfjs-dist/build/pdf.worker.js");
+window.pdfjsWorker = require("pdfjs-dist/build/pdf.worker.js");
 
 // cdn 2.8.335  2.6.347 2.5.207
-PDFJS.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
+//PDFJS.GlobalWorkerOptions.workerSrc = require('pdfjs-dist/legacy/build/pdf.worker.entry')
 
 // https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.js
 // Requires single file built version of PDF.js -- please run
@@ -41,7 +41,7 @@ let maxTouchPoints = (typeof navigator !== 'undefined' && navigator.maxTouchPoin
 let maxCanvasPixels = 16777216
 // PDF之外占据的宽度 -18 padding -18减去滚动条宽度（不确定）
 let autoWidth = 36
-let textLayerTop = 3
+//let textLayerTop = 3
 let scaleInterval = 0.05
 
 let isAndroid = /Android/.test(userAgent)
@@ -50,13 +50,14 @@ let isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent) || (platform === 'MacInt
   if (isIOS || isAndroid) {
     maxCanvasPixels = 5242880
     autoWidth -= 18
-    textLayerTop -= 1
+    //textLayerTop -= 1
     // 手机上面缩放对清晰度影响更小
     scaleInterval = 0.4
   }
 })()
 import AlloyFinger from 'alloyfinger'
 import {readonly, ref} from "vue";
+
 //包装一下 不然 eslint 报警告
 class FingerTouch {
   constructor(element, options) {
@@ -64,6 +65,7 @@ class FingerTouch {
     AlloyFinger.call(this, element, options)
   }
 }
+
 let pdfDoc;
 export default {
   inject: ['bus'],
@@ -83,7 +85,8 @@ export default {
       viewport: null,
       canvasEles: [],
       canvasCtxs: [],
-      totallPage: 0,
+      totalPage: 0,
+      renderedPage: 0,
       pageScale: 1, // pdf 适应窗口产生的 scale
       curCanvasCSSWh: null,
       transform: null,
@@ -132,7 +135,7 @@ export default {
       const loadingState = await this.getPDF()
       if (loadingState === 'success') {
         this.initRenderOneByOne()
-        this.initTouch()
+        //this.initTouch()
       } else this.boxEl.innerText = loadingState
     },
     initTouch() {
@@ -151,7 +154,7 @@ export default {
     },
     scaleEvent(scale) {
       // 渲染中 不让缩放 也不让重绘
-      if (this.pageRenderedNum !== this.totallPage || this.totallPage === 0) return
+      if (this.pageRenderedNum !== this.totalPage || this.totalPage === 0) return
 
       // 没在渲染中 随意缩放
       this.scaleCanvas(scale)
@@ -181,7 +184,7 @@ export default {
         scale: (this.pageScale * CSS_UNITS * scale).toFixed(3)
       })
 
-      const { styleWidth, styleHeight } = this.getCanvasCSSWH()
+      const {styleWidth, styleHeight} = this.getCanvasCSSWH()
 
       // 计算一下 top left 不然可能会显示到 窗口外面 看不到了
       this.scaleTopLeft(styleWidth, styleHeight)
@@ -239,18 +242,17 @@ export default {
     },
 
     getPDF() {
-      let that = this
       return new Promise(resolve => {
-        PDFJS.getDocument(that.src).promise.then(
-            function (pdfDoc_) {
+        PDFJS.getDocument(this.src).promise.then(
+            pdfDoc_ => {
               pdfDoc = pdfDoc_
-              that.totallPage = Math.min(30, pdfDoc.numPages);
-              that.loading = false
+              this.totalPage = Math.min(30, pdfDoc.numPages)
+              this.loading = false
               resolve('success')
             },
             function (reason) {
               console.log(reason.message)
-              that.loading = false
+              this.loading = false
               resolve(reason.name)
             }
         )
@@ -258,7 +260,7 @@ export default {
     },
 
     initRenderOneByOne() {
-      for (let pageNum = 1; pageNum <= this.totallPage; pageNum++) {
+      for (let pageNum = 1; pageNum <= this.totalPage; pageNum++) {
         let canvas = document.createElement('canvas')
         canvas.setAttribute('id', `pdf-canvas${pageNum}-${this.type}`)
         canvas.setAttribute('class', `pdfcanvas`)
@@ -270,38 +272,25 @@ export default {
         let ctx = canvas.getContext('2d')
         this.canvasCtxs.push(ctx)
         this.canvasEles.push(canvas)
-        //  this.wrapEl.appendChild(canvas);
 
         let pageDiv = document.createElement('div')
         pageDiv.setAttribute('id', `page-${pageNum}-${this.type}`)
         pageDiv.setAttribute('style', 'position: relative;')
         this.wrapEl.appendChild(pageDiv)
         pageDiv.appendChild(canvas)
+        this.renderSinglePage(this.canvasEles[pageNum - 1], pageNum)
       }
-      this.renderSinglePage(this.canvasEles[0], 1)
     },
 
     renderSinglePage(canvas, pageNum) {
       let ctx = this.canvasCtxs[pageNum - 1]
-      let that = this
-      pdfDoc.getPage(pageNum).then(function (page) {
-        if (that.isFirstTimeRender) that.initView(page, ctx)
-
-        //if (pageNum === 1) that.getCanvasCSSWH()
-        that.getCanvasCSSWH()
-
-        that.setCanvasCSSWh.call(that, canvas)
-        let renderTask = that.pageRender.call(that, page, ctx)
-
-        renderTask.promise
-            .then(function () {
-              if (that.totallPage > pageNum) {
-                that.renderSinglePage(that.canvasEles[pageNum], pageNum + 1)
-              }
-              that.pageRenderedNum++
-              return page.getTextContent()
-            })
-            .then(textContent => that.textRender.call(that, canvas, pageNum, textContent))
+      pdfDoc.getPage(pageNum).then(async page => {
+        if (this.isFirstTimeRender) this.initView(page, ctx)
+        this.renderedPage++;
+        this.getCanvasCSSWH()
+        this.setCanvasCSSWh.call(this, canvas)
+        this.pageRender.call(this, page, ctx)
+        this.textRender.call(this, canvas, pageNum, await page.getTextContent())
       })
     },
     textRerender(pageIndex, textContent) {
@@ -309,7 +298,7 @@ export default {
 
       const newDiv = document.createElement('div')
       newDiv.setAttribute('class', 'textLayer')
-      newDiv.setAttribute('style', `top: ${textLayerTop}px`)
+      //newDiv.setAttribute('style', `top: ${textLayerTop}px`)
 
       oldDiv.parentElement.replaceChild(newDiv, oldDiv)
       this.textEls[pageIndex - 1] = newDiv
@@ -318,10 +307,25 @@ export default {
     textRender(canvas, pageIndex, textContent) {
       const textLayerDiv = document.createElement('div')
       textLayerDiv.setAttribute('class', 'textLayer')
-      textLayerDiv.setAttribute('style', `top: ${textLayerTop}px`)
+      //textLayerDiv.setAttribute('style', `top: ${textLayerTop}px`)
       canvas.parentElement.appendChild(textLayerDiv)
       this.textEls[pageIndex - 1] = textLayerDiv
       this.renderTextLayer(textLayerDiv, pageIndex, textContent)
+      setTimeout(() => {
+        textLayerDiv.childNodes.forEach((text) => {
+          if (text.localName === "span") {
+            const style = text.style
+            const fontSize = parseFloat(style.fontSize)
+            if (fontSize < 12) {
+              let transform = style.transform.match(/\d+(.\d+)?/g)
+              if (transform === null) transform = 1
+              transform *= fontSize / 12
+              style.transform = `scaleX(${transform})`
+            }
+          }
+        })
+      }, 1000)
+
     },
     renderTextLayer(el, index, content) {
       var textLayer = new TextLayerBuilder({
@@ -330,7 +334,6 @@ export default {
         pageIndex: index,
         viewport: this.viewport
       })
-
       textLayer.setTextContent(content)
       textLayer.render()
     },
@@ -385,9 +388,9 @@ export default {
 
       this.viewWidth = styleWidth + 2
       // 12 加上 canvas border margin 误差？2 + 9 + 1
-      this.viewHeight = this.totallPage * (this.viewport.height + 12) + 9
+      this.viewHeight = this.renderedPage * (this.viewport.height + 12) + 9
 
-      this.curCanvasCSSWh = { width, height, styleWidth, styleHeight }
+      this.curCanvasCSSWh = {width, height, styleWidth, styleHeight}
       return this.curCanvasCSSWh
     },
     approximateFraction(x) {
@@ -472,7 +475,6 @@ export default {
 <style scoped>
 .pdf-touch-box-main,
 .pdf-touch-box-ref {
-  padding: 9px;
   width: calc(100% - 18px);
   height: calc(100% - 18px);
   position: relative;
@@ -484,8 +486,6 @@ export default {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  margin-top: 44px;
-  padding-top: 9px;
   position: absolute;
 }
 

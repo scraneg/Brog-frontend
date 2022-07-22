@@ -2,26 +2,26 @@
   <el-container style="height: 100%">
     <el-main class="pdf-box">
       <el-scrollbar>
-        <brogPDF :key="src" :src="src" type="main"></brogPDF>
+        <PDF :key="src" :src="src" type="main"></PDF>
       </el-scrollbar>
     </el-main>
     <el-main class="pdf-box">
       <el-scrollbar>
-        <brogPDF :key="src" :src="src" type="ref"></brogPDF>
+        <PDF :key="src" :src="src" type="ref"></PDF>
       </el-scrollbar>
     </el-main>
   </el-container>
 </template>
 
 <script>
-import BrogPDF from "@/views/reader/BrogPDF";
+import PDF from "@/components/PDF/PDF";
 import {ElMessage} from "element-plus";
 import {inject, ref} from "vue";
 
 export default {
   props: ['type'],
   components: {
-    BrogPDF
+    PDF
   },
   setup() {
     const axios = inject('axios')
