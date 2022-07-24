@@ -66,7 +66,7 @@ h1 {
 
     align-items: center;
     width: 500px;
-    height: 520px;
+    height: 460px;
     margin: 0 5vw;
     padding: 3.5vw;
     box-sizing: border-box;
@@ -136,7 +136,7 @@ h1 {
     background: #ffffff;
     border: none;
     padding: 13px 0;
-    margin-top: 80px;
+    margin-top: 30px;
     margin-right: 40px;
     outline: none;
     width: 130px;
@@ -172,29 +172,6 @@ h1 {
     margin: 0;
     margin-bottom: 1rem; /*下边距*/
     text-align: center;
-}
-
-.wthree-text {
-    width: 100%;
-}
-
-.wthree-text ul li:nth-child(1) {
-    float: left;
-}
-
-.wthree-text ul li:nth-child(2) {
-    float: right;
-}
-
-.wthree-text ul li {
-    display: inline-block;
-}
-
-.wthree-text ul li a {
-    color: rgb(0, 0, 0);
-    font-size: 14px;
-    letter-spacing: 1px;
-    font-weight: 500;
 }
 
 

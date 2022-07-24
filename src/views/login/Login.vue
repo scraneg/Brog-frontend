@@ -11,25 +11,10 @@
         <div class="form-style-agile">
           <input v-model="loginCredential.password" placeholder="Password" required="" type="password"/>
         </div>
-        <div class="wthree-text">
-          <ul>
-            <li>
-              <div class="checkout-w3l">
-                <div class="demo5">
-                  <input v-model="loginCredential.rememberMe" type="checkbox">
-                </div>
-                记住我
-              </div>
-            </li>
-            <li>
-              <router-link to="/retrieve">忘记密码</router-link>
-            </li>
-          </ul>
-        </div>
         <div class="wrapper">
           <div class="forms-gds">
-            <button class="btn" type="submit" @click.prevent="onLogin">登录</button>
-            <button class="btn" type="submit" @click.prevent="$router.push('/register')">注册</button>
+            <button type="submit" @click.prevent="onLogin">登录</button>
+            <button type="submit" @click.prevent="$router.push('/register')">注册</button>
           </div>
         </div>
       </form>
