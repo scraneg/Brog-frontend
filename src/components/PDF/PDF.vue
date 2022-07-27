@@ -1,16 +1,14 @@
 <template>
-  <div :class="`pdf-touch-box-${this.type}`" @mouseup="onSelect">
+  <div :class="`pdf-touch-box`">
     <div
         v-show="!loading"
-        :class="`pdf-canvas-wrap-${this.type}`"
+        :class="`pdf-canvas-wrap`"
         :style="{
-        top: viewTop + 'px',
-        left: viewLeft + 'px',
-        width: viewWidth + 'px',
-        height: viewHeight + 'px'
+          width: viewWidth + 'px',
+          height: viewHeight + 'px'
       }"
     ></div>
-    <p v-show="loading" :class="`pdf-canvas-tips-${this.type}`">正在加载...</p>
+    <p v-show="loading" :class="`pdf-canvas-tips`">正在加载...</p>
   </div>
 </template>
 
@@ -19,7 +17,6 @@ import * as PDFJS from 'pdfjs-dist/legacy/build/pdf'
 
 import {EventBus, TextLayerBuilder} from 'pdfjs-dist/legacy/web/pdf_viewer'
 import 'pdfjs-dist/legacy/web/pdf_viewer.css'
-import {readonly, ref} from "vue";
 
 // 本地
 window.pdfjsWorker = require("pdfjs-dist/build/pdf.worker.js");
@@ -28,12 +25,12 @@ const CSS_UNITS = 96.0 / 72.0
 // const PRINT_UNITS = 150 / 72.0;
 
 let maxCanvasPixels = 16777216
-// PDF之外占据的宽度 -18 padding -18减去滚动条宽度（不确定）
-let autoWidth = 36
+
+// PDF之外占据的宽度
+let autoWidth = 0
 
 let pdfDoc;
 export default {
-  inject: ['bus'],
   props: ['type', 'src'],
   data() {
     return {
@@ -60,8 +57,6 @@ export default {
       lastStyleScale: 1,
       lastRerenderScale: 1,
       alloyFinger: null,
-      viewTop: 0,
-      viewLeft: 9,
       textEls: []
     }
   },
@@ -69,32 +64,17 @@ export default {
     this.init()
   },
   methods: {
-    onSelect(e) {
-      if (!this.bus.isWatching || e.path[0].localName !== "span" || e.path[1].className !== "textLayer") {
-        return
-      }
-      const selectedText = window.getSelection().toString();
-      if (selectedText.length === 0) {
-        return;
-      }
-      for (let i = 0; i < 4; i++) {
-        const id = e.path[i].id;
-        if (id.indexOf("page-") >= 0) {
-          this.bus.selectedText = readonly(ref(selectedText));
-        }
-      }
-    },
     async init() {
       //禁止下拉刷新
-      document.addEventListener(
+      this.$el.addEventListener(
           'touchmove',
           function (ev) {
             ev.preventDefault()
           },
           {passive: false}
       )
-      this.boxEl = document.querySelector(`.pdf-touch-box-${this.type}`)
-      this.wrapEl = document.getElementsByClassName(`pdf-canvas-wrap-${this.type}`)[0]
+      this.boxEl = this.$el
+      this.wrapEl = this.$el.getElementsByClassName(`pdf-canvas-wrap`)[0]
       this.btnWidth = this.areaWidth = this.boxEl.clientWidth
 
       const loadingState = await this.getPDF()
@@ -109,7 +89,7 @@ export default {
         PDFJS.getDocument(this.src).promise.then(
             pdfDoc_ => {
               pdfDoc = pdfDoc_
-              this.totalPage = Math.min(30, pdfDoc.numPages)
+              this.totalPage = Math.min(5, pdfDoc.numPages)
               this.loading = false
               resolve('success')
             },
@@ -125,7 +105,7 @@ export default {
     initRenderOneByOne() {
       for (let pageNum = 1; pageNum <= this.totalPage; pageNum++) {
         let canvas = document.createElement('canvas')
-        canvas.setAttribute('id', `pdf-canvas${pageNum}-${this.type}`)
+        canvas.setAttribute('id', `pdf-canvas${pageNum}`)
         canvas.setAttribute('class', `pdfcanvas`)
         // alpha 设定 canvas 背景总是不透明，可以加快浏览器绘制透明的内容和图片 初始化出来 canvas 为黑色背景
         // 实际上 导致 重新渲染的时候 闪黑屏
@@ -137,7 +117,7 @@ export default {
         this.canvasEles.push(canvas)
 
         let pageDiv = document.createElement('div')
-        pageDiv.setAttribute('id', `page-${pageNum}-${this.type}`)
+        pageDiv.setAttribute('id', `page-${pageNum}`)
         pageDiv.setAttribute('style', 'position: relative;')
         this.wrapEl.appendChild(pageDiv)
         pageDiv.appendChild(canvas)
@@ -233,7 +213,7 @@ export default {
 
       this.viewWidth = styleWidth + 2
       // 12 加上 canvas border margin 误差？2 + 9 + 1
-      this.viewHeight = this.renderedPage * (this.viewport.height + 12) + 9
+      this.viewHeight = this.renderedPage * (this.viewport.height + 15) + 10
 
       this.curCanvasCSSWh = {width, height, styleWidth, styleHeight}
       return this.curCanvasCSSWh
@@ -317,15 +297,12 @@ export default {
 </script>
 
 <style scoped>
-.pdf-touch-box-main,
-.pdf-touch-box-ref {
-  width: calc(100% - 18px);
-  height: calc(100% - 18px);
+.pdf-touch-box {
+  height: 100%;
   position: relative;
 }
 
-.pdf-canvas-wrap-main,
-.pdf-canvas-wrap-ref {
+.pdf-canvas-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -333,8 +310,7 @@ export default {
   position: absolute;
 }
 
-.pdf-canvas-tips-main,
-.pdf-canvas-tips-ref {
+.pdf-canvas-tips {
   margin-top: 44px;
 }
 </style>

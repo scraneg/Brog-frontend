@@ -6,7 +6,6 @@
           <el-icon>
             <Back></Back>
           </el-icon>
-          返回
         </el-button>
       </el-col>
       <el-col :span="3">
@@ -48,7 +47,6 @@ import {Back} from '@element-plus/icons-vue'
 import {inject, reactive, ref, toRef, watch} from "vue";
 
 export default {
-  name: "Header",
   components: {
     Back
   },
@@ -82,8 +80,4 @@ export default {
 </script>
 
 <style scoped>
-.header {
-  height: 100%;
-  width: 100%;
-}
 </style>

@@ -1,18 +1,18 @@
 <template>
-  <el-container>
-    <el-header style="background-color: #ccd1ee;">
-      <reader-header/>
-    </el-header>
-    <el-main>
+  <el-container style="background-color: #cccccc">
+    <el-main class="main">
       <reader-main/>
     </el-main>
+    <el-aside class="aside" v-if="show" @click="show=false">
+      <reader-aside/>
+    </el-aside>
   </el-container>
 </template>
 
 <script>
 import Main from "./Main";
-import Header from "./Header"
-import {provide, onMounted, reactive, watch, toRef, inject} from "vue";
+import Aside from "./Aside"
+import {provide, onMounted, reactive, watch, toRef, inject, ref} from "vue";
 import {useRoute} from "vue-router";
 import {ElMessage} from 'element-plus';
 
@@ -20,7 +20,7 @@ export default {
   name: "reader",
   components: {
     'reader-main': Main,
-    'reader-header': Header,
+    'reader-aside': Aside,
   },
   setup() {
     const route = useRoute();
@@ -47,7 +47,7 @@ export default {
 
     function requestReference(book_id, selected_keyword){
       return new Promise((resolve, reject) => {
-        this.axios.get('/user/get_reference', {
+        axios.get('/user/get_reference', {
           params: {
             bid: book_id,
             keyword: selected_keyword
@@ -67,10 +67,20 @@ export default {
         });
       });
     }
+
+    return {
+      show: ref(true)
+    }
   }
 }
 </script>
 
 <style scoped>
+.main {
+  padding: 0;
+}
 
+.aside {
+  width: 38%;
+}
 </style>
