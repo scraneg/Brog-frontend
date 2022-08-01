@@ -1,8 +1,10 @@
 <template>
-  <tool-box style="height: 5%;background-color: black"></tool-box>
-  <el-scrollbar style="height: 95%">
-    <PDF :key="src" :src="src" style="width: 60vw;margin: 5px auto 0" @mouseup="onSelect"></PDF>
-  </el-scrollbar>
+  <el-main style="padding: 0">
+    <tool-box style="height: 5%;background-color: black"></tool-box>
+    <el-scrollbar style="height: 95%">
+      <PDF :key="src" :src="src" style="width: 60vw;margin: 5px auto 0" @mouseup="onSelect"></PDF>
+    </el-scrollbar>
+  </el-main>
 </template>
 
 <script>

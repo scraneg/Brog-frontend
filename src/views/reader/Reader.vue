@@ -1,11 +1,7 @@
 <template>
   <el-container style="background-color: #cccccc">
-    <el-main class="main">
-      <reader-main/>
-    </el-main>
-    <el-aside class="aside" v-if="show" @click="show=false">
-      <reader-aside/>
-    </el-aside>
+    <reader-main/>
+    <reader-aside/>
   </el-container>
 </template>
 
@@ -76,11 +72,4 @@ export default {
 </script>
 
 <style scoped>
-.main {
-  padding: 0;
-}
-
-.aside {
-  width: 38%;
-}
 </style>
