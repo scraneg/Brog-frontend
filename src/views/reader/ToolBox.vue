@@ -1,18 +1,41 @@
 <template>
   <div class="header">
-    <el-row justify="space-around">
-      <el-col :span="3">
-        <el-button @click="$router.go(-1)">
-          <el-icon>
-            <Back></Back>
-          </el-icon>
-        </el-button>
+    <el-row align="middle" style="height: 100%" class="wrapper">
+      <el-col :span="1"/>
+      <el-col :span="1">
+        <el-icon class="tool" @click="$router.go(-1)">
+          <el-image src="/back.png"/>
+        </el-icon>
       </el-col>
-      <el-col :span="3">
-        <el-button @click="enableSelect">{{ bus.isWatching ? "关闭划词" : "开启划词" }}</el-button>
+      <el-col :span="1">
+        <el-icon class="tool" @click="enableSelect">
+          <el-image src="/note.png"/>
+        </el-icon>
       </el-col>
-      <el-col :span="3">
-        <el-button @click="showDialog">按钮</el-button>
+      <el-col :span="1">
+        <el-icon class="tool" @click="showDialog">
+          <el-image src="/save.png"/>
+        </el-icon>
+      </el-col>
+      <el-col :span="6"/>
+      <el-col :span="4">
+        <el-input :prefix-icon="Search" v-model="searchContent"></el-input>
+      </el-col>
+      <el-col :span="6"/>
+      <el-col :span="1">
+        <el-icon class="tool" @click="$router.go(-1)">
+          <el-image src="/back.png"/>
+        </el-icon>
+      </el-col>
+      <el-col :span="1">
+        <el-icon class="tool" @click="enableSelect">
+          <el-image src="/note.png"/>
+        </el-icon>
+      </el-col>
+      <el-col :span="1">
+        <el-icon class="tool" @click="showDialog">
+          <el-image src="/save.png"/>
+        </el-icon>
       </el-col>
     </el-row>
     <el-dialog
@@ -43,13 +66,11 @@
 </template>
 
 <script>
-import {Back} from '@element-plus/icons-vue'
+import {Search} from "@element-plus/icons-vue"
 import {inject, reactive, ref, toRef, watch} from "vue";
 
 export default {
-  components: {
-    Back
-  },
+
   setup() {
     const bus = inject("bus")
     bus.isWatching = ref(false)
@@ -68,7 +89,10 @@ export default {
     watch(toRef(bus, 'selectedText'), () => {
       formData.selectedText = bus.selectedText
     })
+    const searchContent = ref('')
     return {
+      Search,
+      searchContent,
       bus,
       dialogVisible,
       formData,
@@ -80,4 +104,9 @@ export default {
 </script>
 
 <style scoped>
+.tool {
+  cursor: pointer;
+  background-color: #e3e2e2;
+  border-radius: 4px;
+}
 </style>

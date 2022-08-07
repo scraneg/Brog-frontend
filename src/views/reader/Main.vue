@@ -1,6 +1,6 @@
 <template>
   <el-main style="padding: 0">
-    <tool-box style="height: 5%;background-color: black"></tool-box>
+    <tool-box style="height: 5%;background-color: #000000"></tool-box>
     <el-scrollbar style="height: 95%">
       <PDF :key="src" :src="src" style="width: 60vw;margin: 5px auto 0" @mouseup="onSelect"></PDF>
     </el-scrollbar>
