@@ -1,7 +1,11 @@
 <template>
   <el-aside style="width: 38%" v-if="tabs.length > 0">
     <el-menu mode="horizontal" :default-active="tabs[0].id">
-      <el-menu-item v-for="tab in tabs" :key="tab.id" :index="tab.id" @click="activeId=tab.id">{{ tab.name }}
+      <el-menu-item v-for="(tab, idx) in tabs" :key="tab.id" :index="tab.id" @click="activeId=tab.id">
+        {{ tab.name }}
+        <el-icon @click.stop="closeTab(idx)">
+          <Close/>
+        </el-icon>
       </el-menu-item>
     </el-menu>
     <div class="tab-wrapper">
@@ -17,33 +21,49 @@
 <script>
 import PDF from "@/components/PDF/PDF";
 import {reactive, ref, watch} from "vue";
+import {Close} from "@element-plus/icons-vue";
 
 export default {
   components: {
+    Close,
     PDF
   },
   name: "Aside",
   setup() {
     const tabs = reactive([
       {
-        id: 1,
+        id: '1',
         name: '数据科学与工程数学基础',
         src: '/a.pdf'
       },
       {
-        id: 2,
+        id: '2',
+        name: '数据科学与工程数学基础',
+        src: '/a.pdf'
+      },
+      {
+        id: '3',
+        name: '数据科学与工程数学基础',
+        src: '/a.pdf'
+      },
+      {
+        id: '4',
         name: '数据科学与工程数学基础',
         src: '/a.pdf'
       }
     ]);
     const activeId = ref(-1);
     watch(tabs, (nv, ov) => {
-      if (ov.length === 0)
+      if (ov.length === 0 && nv.length > 0)
         activeId.value = nv[0].id
     })
+    const closeTab = (idx) => {
+      tabs.splice(idx, 1)
+    }
     return {
       tabs,
       activeId,
+      closeTab,
     }
   }
 }
