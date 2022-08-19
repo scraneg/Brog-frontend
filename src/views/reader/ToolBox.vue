@@ -4,17 +4,17 @@
       <el-col :span="1"/>
       <el-col :span="1">
         <el-icon class="tool" @click="$router.go(-1)">
-          <el-image src="/back.png"/>
+          <el-image src="/images/back.png"/>
         </el-icon>
       </el-col>
       <el-col :span="1">
         <el-icon class="tool" @click="enableSelect">
-          <el-image src="/note.png"/>
+          <el-image src="/images/note.png"/>
         </el-icon>
       </el-col>
       <el-col :span="1">
         <el-icon class="tool" @click="showDialog">
-          <el-image src="/save.png"/>
+          <el-image src="/images/save.png"/>
         </el-icon>
       </el-col>
       <el-col :span="6"/>
@@ -24,17 +24,17 @@
       <el-col :span="6"/>
       <el-col :span="1">
         <el-icon class="tool" @click="$router.go(-1)">
-          <el-image src="/back.png"/>
+          <el-image src="/images/back.png"/>
         </el-icon>
       </el-col>
       <el-col :span="1">
         <el-icon class="tool" @click="enableSelect">
-          <el-image src="/note.png"/>
+          <el-image src="/images/note.png"/>
         </el-icon>
       </el-col>
       <el-col :span="1">
         <el-icon class="tool" @click="showDialog">
-          <el-image src="/save.png"/>
+          <el-image src="/images/save.png"/>
         </el-icon>
       </el-col>
     </el-row>
