@@ -6,7 +6,7 @@ import router from './routers/index'
 import axios from 'axios'
 
 const instance = axios.create({
-    baseURL: "http://139.196.59.66:8200"
+    baseURL: "http://localhost:8080/api",
 })
 instance.defaults.withCredentials = true
 const app = createApp(App)
