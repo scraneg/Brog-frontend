@@ -53,11 +53,11 @@ export default {
 
     /** “登陆系统”按钮Click事件处理函数 */
     function onLogin() {
-      let reqBody = {'name': loginCredential.username, 'pwd': loginCredential.password};
+      let reqBody = {'account': loginCredential.username, 'password': loginCredential.password};
 
       axios.post('/auth/login', reqBody).then((res) => {
         let resBody = res.data;
-        if (resBody.status === 'success') {
+        if (resBody.status === 1) {
           if(loginCredential.rememberMe){
             localStorage.setItem('username', loginCredential.username);
             localStorage.setItem('password', loginCredential.password);

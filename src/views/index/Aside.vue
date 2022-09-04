@@ -25,7 +25,7 @@ export default {
   name: "aside",
   setup(){
     const axios = inject("axios");
-    axios.defaults.withCredentials = true;
+    axios.withCredentials = true;
 
     const username = ref("");
 
@@ -34,11 +34,11 @@ export default {
     });
 
     function getUsername(){
-      axios.get('/auth/profile').then((res) => {
+      axios.get('/profile/list_profile').then((res) => {
         let res_body = res.data;
-        if (res_body.status === 'success') {
-          let profile = res_body.profile_obj;
-          username.value = profile.name;
+        if (res_body.status === 1) {
+          let profile = res_body.profile;
+          username.value = profile.nickname;
         } else {
           console.log(res_body);
           ElMessage.error('获取用户信息错误！')
