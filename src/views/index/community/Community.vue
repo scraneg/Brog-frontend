@@ -77,7 +77,7 @@ export default {
     });
 
     function getCommunityResource(){
-      axios.get('/user/list_community').then((res) => {
+      axios.get('/community/list_community').then((res) => {
         let res_body = res.data;
         if (res_body.status === 'success') {
           let res_books = res_body.booklist;

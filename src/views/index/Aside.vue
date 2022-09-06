@@ -34,7 +34,7 @@ export default {
     });
 
     function getUsername(){
-      axios.get('/profile/list_profile').then((res) => {
+      axios.get('/profile/get_profile').then((res) => {
         let res_body = res.data;
         if (res_body.status === 1) {
           let profile = res_body.profile;
