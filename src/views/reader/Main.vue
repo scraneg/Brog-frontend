@@ -42,14 +42,14 @@ export default {
       axios.withCredentials = true;
       if (bus.main_pdf !== undefined) {
         return new Promise((resolve, reject) => {
-          axios.get('/file/get_file_path', {
+          axios.get('/reader/get_filename', {
             params: {
-              bid: bus.main_pdf
+              mid: bus.main_pdf
             }
           }).then((res) => {
             let res_body = res.data;
-            if (res_body.status === 'success') {
-              src.value = 'http://' + res_body.file_obj.file_path;
+            if (res_body.status === 1) {
+              src.value = 'https://localhost:8200/file/material/' + res_body.message;
               resolve(true);
             } else {
               console.log(res_body);

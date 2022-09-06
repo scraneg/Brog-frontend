@@ -37,21 +37,22 @@ export default {
     });
 
     async function getReference(book_id, selected_keyword){
-      let ref_bid_list = await requestReference(book_id, selected_keyword);
-      bus.ref_pdf = ref_bid_list[0];
+      let ref_materials = await requestReference(book_id, selected_keyword);
+      bus.ref_materials = ref_materials;
     }
 
     function requestReference(book_id, selected_keyword){
+      console.log(selected_keyword);
       return new Promise((resolve, reject) => {
-        axios.get('/user/get_reference', {
+        axios.get('/reader/get_reference', {
           params: {
-            bid: book_id,
+            mid: book_id,
             keyword: selected_keyword
           }
         }).then((res) => {
           let res_body = res.data;
-          if (res_body.status === 'success') {
-            resolve(res_body.reflist);
+          if (res_body.status === 1) {
+            resolve(res_body.references);
           } else {
             console.log(res_body);
             resolve(false);

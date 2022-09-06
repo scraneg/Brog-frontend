@@ -1,6 +1,6 @@
 <template>
   <el-space direction="vertical" :size="70" class="main">
-    <el-avatar src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"/>
+    <el-avatar :size="100" :src="avatarPath" />
     <div>{{username}}</div>
     <el-button class="button" @click.prevent="$router.push('bookshelf')">
       <el-badge value="5"/>
@@ -29,6 +29,8 @@ export default {
 
     const username = ref("");
 
+    const avatarPath = ref("https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png");
+
     onMounted(() => {
       getUsername();
     });
@@ -39,6 +41,10 @@ export default {
         if (res_body.status === 1) {
           let profile = res_body.profile;
           username.value = profile.nickname;
+          if(profile.avatar != null){
+            avatarPath.value = "https://localhost:8200" + "/file/avatar/" + profile.avatar;
+            console.log(avatarPath);
+          }
         } else {
           console.log(res_body);
           ElMessage.error('获取用户信息错误！')
@@ -49,7 +55,8 @@ export default {
     }
 
     return {
-      username
+      username,
+      avatarPath
     }
   }
 }

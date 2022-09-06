@@ -20,7 +20,7 @@
 
 <script>
 import PDF from "@/components/PDF/PDF";
-import {reactive, ref, watch} from "vue";
+import {inject, reactive, ref, watch} from "vue";
 import {Close} from "@element-plus/icons-vue";
 
 export default {
@@ -30,12 +30,16 @@ export default {
   },
   name: "Aside",
   setup() {
+    //const axios = inject('axios')
+    const bus = inject('bus')
+    console.log(bus)
     const tabs = reactive([
       {
         id: '1',
         name: '数据科学与工程数学基础',
         src: '/a.pdf'
       },
+      /*
       {
         id: '2',
         name: '数据科学与工程数学基础',
@@ -51,6 +55,7 @@ export default {
         name: '数据科学与工程数学基础',
         src: '/a.pdf'
       }
+      */
     ]);
     const activeId = ref(-1);
     watch(tabs, (nv, ov) => {

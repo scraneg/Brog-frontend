@@ -42,16 +42,16 @@ export default {
     });
 
     function getUserShelf(){
-      axios.get('/file/list_book').then((res) => {
+      axios.get('/property/get_property').then((res) => {
         let res_body = res.data;
-        if (res_body.status === 'success') {
-          let res_books = res_body.booklist;
+        if (res_body.status === 1) {
+          let res_books = res_body.materials;
           res_books.forEach(res_book => {
             books.push({
-              id: res_book.bid,
+              id: res_book.id,
               page: res_book.page,
-              name: res_book.filename,
-              cover: 'http://' + res_book.cover_path
+              name: res_book.title,
+              cover: 'https://localhost:8200/file/cover' + res_book.cover_path
             });
           });
         } else {

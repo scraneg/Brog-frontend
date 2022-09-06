@@ -25,18 +25,19 @@
             <p v-if="!book_item.audited" style="color: gray">未校对资源</p>
           </el-col>
           <el-col :span="5">
-            <el-button type="primary" :disabled="!book_item.audited" @click="onAddToShelf(book_item)">添加到我的书架</el-button>
+            <el-button type="primary" @click="onAddToShelf(book_item)">添加到我的书架</el-button>
           </el-col>
         </el-row>
       </el-card>
     </el-space>
 
     <el-dialog v-model="uploadDialogVisible" title="上传资源">
-      <el-upload ref="uploadFile" action="http://localhost:8000/file/upload" name="f" :with-credentials="true" :auto-upload="false">
+      <el-input v-model="uploadMeta.title" placeholder="资源标题" />
+      <el-upload ref="uploadFile" action="https://localhost:8200/community/upload_material" :data="uploadMeta" name="file" :with-credentials="true" :auto-upload="false">
         <el-button type="primary">添加文件</el-button>
       </el-upload>
       <!--
-      <el-upload ref="uploadCover" action="http://localhost:8000/file/upload" name="f" :with-credentials="true" :auto-upload="false">
+      <el-upload ref="uploadCover" action="https://localhost:8200/community/upload_cover" name="file" :with-credentials="true" :auto-upload="false">
         <el-button type="secondary">添加封面</el-button>
       </el-upload>
       -->
@@ -71,21 +72,26 @@ export default {
       }
     ]);
 
+    const uploadMeta = reactive({
+      type: 1,
+      title: "1234test"
+    });
+
     onMounted(() => {
       document.title = "社区";
       getCommunityResource();
     });
 
     function getCommunityResource(){
-      axios.get('/community/list_community').then((res) => {
+      axios.get('/community/list_material').then((res) => {
         let res_body = res.data;
-        if (res_body.status === 'success') {
-          let res_books = res_body.booklist;
+        if (res_body.status === 1) {
+          let res_books = res_body.materials;
           res_books.forEach(res_book => {
             bookList.push({
               bid: res_book.id,
-              name: res_book.filename,
-              cover: 'http://' + res_book.cover_path,
+              name: res_book.title,
+              cover: 'https://localhost:8200/file/cover/' + res_book.cover_path,
               audited: res_book.audited
             });
           });
@@ -109,12 +115,12 @@ export default {
     }
 
     function onAddToShelf(book_item){
-      if(book_item.audited){
-        let reqBody = {'bid': book_item.bid};
+      //if(book_item.audited){
+        let reqBody = {'mid': book_item.bid};
 
-        axios.post('/user/add_shelf', reqBody).then((res) => {
+        axios.post('/community/add_property', reqBody).then((res) => {
           let resBody = res.data;
-          if (resBody.status === 'success') {
+          if (resBody.status === 1) {
             ElMessage.success('添加到我的书架成功！');
           } else {
             console.log(resBody);
@@ -123,10 +129,10 @@ export default {
         }).catch((error) => {
           console.log(error);
         })
-      }
-      else{
-        ElMessage.error('十分抱歉！资源尚未校对，为保证系统正确运作，暂不支持加入书架！')
-      }
+      //}
+      //else{
+      //  ElMessage.error('十分抱歉！资源尚未校对，为保证系统正确运作，暂不支持加入书架！')
+      //}
     }
 
     return {
@@ -137,7 +143,8 @@ export default {
       uploadCover,
       uploadResource,
       bookList,
-      onAddToShelf
+      onAddToShelf,
+      uploadMeta
     }
   }
 }
