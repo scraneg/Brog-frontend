@@ -3,6 +3,9 @@
     <el-menu mode="horizontal" :default-active="String(activeId)">
       <el-menu-item v-for="tab in tabs" :key="tab.id" :index="String(tab.id)" @click="activeId=tab.id">
         {{ tab.name }}
+        <el-icon @click="refToMain(tab.id)">
+          <ArrowLeftBold/>
+        </el-icon>
         <el-icon @click.stop="closeTab(tab.id)">
           <Close/>
         </el-icon>
@@ -21,18 +24,21 @@
 <script>
 import PDF from "@/components/PDF/PDF";
 import {inject, reactive, ref, watch, toRef} from "vue";
-import {Close} from "@element-plus/icons-vue";
+import {useRouter} from "vue-router";
+import {Close, ArrowLeftBold} from "@element-plus/icons-vue";
 import {getRandomInt} from "element-plus/es/utils/util";
 
 export default {
   components: {
     Close,
+    ArrowLeftBold,
     PDF
   },
   name: "Aside",
   setup() {
     const bus = inject('bus')
     const baseURL = inject("baseURL")
+    const router = useRouter()
     const tabs = reactive([]);
 
     const activeId = ref(-1);
@@ -45,7 +51,7 @@ export default {
         const id = getRandomInt(1000000)
         tabs.push({
           id,
-          src: baseURL + '/file/material/' + material.filepath,
+          src: baseURL + '/file/cache/' + material.filepath,
           name: material.title,
         })
       }
@@ -67,10 +73,16 @@ export default {
       }
       tabs.splice(idx, 1);
     }
+
+    function refToMain(mid){
+      router.push({path: `/reader`, query: {id: mid}})
+    }
+
     return {
       tabs,
       activeId,
       closeTab,
+      refToMain
     }
   }
 }

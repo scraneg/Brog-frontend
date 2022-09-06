@@ -33,7 +33,7 @@
 
     <el-dialog v-model="uploadDialogVisible" title="上传资源">
       <el-input v-model="uploadMeta.title" placeholder="资源标题" />
-      <el-upload ref="uploadFile" action="https://localhost:8200/community/upload_material" :data="uploadMeta" name="file" :with-credentials="true" :auto-upload="false">
+      <el-upload ref="uploadFile" action="https://www.brogs.cn:8200/community/upload_material" :data="uploadMeta" name="file" :with-credentials="true" :auto-upload="false">
         <el-button type="primary">添加文件</el-button>
       </el-upload>
       <!--

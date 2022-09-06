@@ -21,6 +21,9 @@
       <el-col :span="4">
         <el-input :prefix-icon="Search" v-model="searchContent"></el-input>
       </el-col>
+      <el-col :span="2">
+        <el-button @click="onSearch">搜索</el-button>
+      </el-col>
       <el-col :span="6"/>
       <el-col :span="1">
         <el-icon class="tool" @click="$router.go(-1)">
@@ -68,11 +71,13 @@
 <script>
 import {Search} from "@element-plus/icons-vue"
 import {inject, reactive, ref, toRef, watch} from "vue";
+import {ElMessage} from 'element-plus';
 
 export default {
 
   setup() {
     const bus = inject("bus")
+    const axios = inject("axios")
     bus.isWatching = ref(false)
     const dialogVisible = ref(false)
     const enableSelect = function () {
@@ -90,6 +95,41 @@ export default {
       formData.selectedText = bus.selectedText
     })
     const searchContent = ref('')
+
+    function onSearch(){
+      let keyword = searchContent.value;
+      getReference(bus.main_pdf, keyword)
+    }
+
+    async function getReference(book_id, selected_keyword){
+      let ref_materials = await requestReference(book_id, selected_keyword);
+      bus.ref_materials = ref_materials;
+    }
+
+    function requestReference(book_id, selected_keyword){
+      console.log(selected_keyword);
+      return new Promise((resolve, reject) => {
+        axios.get('/reader/get_reference', {
+          params: {
+            mid: book_id,
+            keyword: selected_keyword
+          }
+        }).then((res) => {
+          let res_body = res.data;
+          if (res_body.status === 1) {
+            resolve(res_body.references);
+          } else {
+            console.log(res_body);
+            resolve(false);
+            ElMessage.error('查询错误！');
+          }
+        }).catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+      });
+    }
+
     return {
       Search,
       searchContent,
@@ -97,7 +137,8 @@ export default {
       dialogVisible,
       formData,
       enableSelect,
-      showDialog
+      showDialog,
+      onSearch
     }
   }
 }

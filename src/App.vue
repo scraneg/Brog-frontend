@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100vh;width: 100vw">
-    <router-view style="height: 95%"/>
+    <router-view style="height: 95%" :key="$route.fullPath" />
     <div class="beian" style="height: 5%">
       <span>沪ICP备2022026383号</span>
     </div>

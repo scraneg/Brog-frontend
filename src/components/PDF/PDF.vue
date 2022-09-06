@@ -89,7 +89,7 @@ export default {
         PDFJS.getDocument(this.src).promise.then(
             pdfDoc_ => {
               pdfDoc = pdfDoc_
-              this.totalPage = Math.min(5, pdfDoc.numPages)
+              this.totalPage = Math.min(20, pdfDoc.numPages)
               this.loading = false
               resolve('success')
             },
