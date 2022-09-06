@@ -19,6 +19,7 @@
 
 <script>
 import {onMounted, ref, inject} from "vue";
+import {useRouter} from "vue-router";
 import {ElMessage} from 'element-plus'
 
 export default {
@@ -26,9 +27,9 @@ export default {
   setup(){
     const axios = inject("axios");
     axios.withCredentials = true;
-
+    const baseURL = inject("baseURL")
     const username = ref("");
-
+    const router = useRouter();
     const avatarPath = ref("https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png");
 
     onMounted(() => {
@@ -42,14 +43,17 @@ export default {
           let profile = res_body.profile;
           username.value = profile.nickname;
           if(profile.avatar != null){
-            avatarPath.value = "https://localhost:8200" + "/file/avatar/" + profile.avatar;
+            avatarPath.value = baseURL + "/file/avatar/" + profile.avatar;
             console.log(avatarPath);
           }
         } else {
           console.log(res_body);
+          router.replace("/login")
           ElMessage.error('获取用户信息错误！')
         }
       }).catch((error) => {
+        router.replace("/login")
+        ElMessage.error('获取用户信息错误！')
         console.log(error);
       })
     }
