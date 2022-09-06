@@ -1,6 +1,6 @@
 <template>
   <div class="community">
-    <el-row justify="space-between" style="padding: 20px">
+    <el-row style="padding: 20px">
       <el-col :span="16">
         <el-input :prefix-icon="Search" v-model="searchContent" placeholder="在社区中搜索"></el-input>
       </el-col>
