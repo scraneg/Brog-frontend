@@ -57,6 +57,7 @@ export default {
   name: "community",
   setup() {
     const axios = inject("axios");
+    const baseURL = inject("baseURL")
     axios.withCredentials = true;
 
     const searchContent = ref("");
@@ -91,7 +92,7 @@ export default {
             bookList.push({
               bid: res_book.id,
               name: res_book.title,
-              cover: 'https://localhost:8200/file/cover/' + res_book.cover_path,
+              cover: baseURL + '/file/cover/' + res_book.filepath,
               audited: res_book.audited
             });
           });

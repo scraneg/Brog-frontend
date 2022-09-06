@@ -25,6 +25,7 @@ export default {
   name: "bookshelf",
   setup() {
     const axios = inject("axios");
+    const baseURL = inject("baseURL")
     axios.defaults.withCredentials = true;
 
     const books = reactive([
@@ -51,7 +52,7 @@ export default {
               id: res_book.id,
               page: res_book.page,
               name: res_book.title,
-              cover: 'https://localhost:8200/file/cover' + res_book.cover_path
+              cover: baseURL + '/file/cover/' + res_book.filepath
             });
           });
         } else {

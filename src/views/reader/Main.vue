@@ -21,6 +21,7 @@ export default {
   setup() {
     const axios = inject('axios')
     const bus = inject('bus')
+    const baseURL = inject("baseURL")
     const src = ref('')
     const onSelect = (e) => {
       console.log(e)
@@ -28,7 +29,7 @@ export default {
         return
       }
       const selectedText = window.getSelection().toString();
-      if (selectedText.length === 0) {
+      if (selectedText.length === 0 || selectedText.length > 64) {
         return;
       }
       for (let i = 0; i < 4; i++) {
@@ -49,7 +50,7 @@ export default {
           }).then((res) => {
             let res_body = res.data;
             if (res_body.status === 1) {
-              src.value = 'https://localhost:8200/file/material/' + res_body.message;
+              src.value = baseURL + '/file/material/' + res_body.message;
               resolve(true);
             } else {
               console.log(res_body);
