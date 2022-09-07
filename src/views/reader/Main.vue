@@ -1,6 +1,13 @@
 <template>
   <el-main style="padding: 0">
     <tool-box style="height: 5%;background-color: #000000"></tool-box>
+    <el-collapse v-if="collapseShow">
+      <el-collapse-item title="阅读路径推荐">
+        <el-card shadow="hover" v-for="(title, index) in readPath" :key="'rec_' + index">
+          {{ title }}
+        </el-card>
+      </el-collapse-item>
+    </el-collapse>
     <el-scrollbar style="height: 95%">
       <PDF :key="src" :src="src" style="width: 60vw;margin: 5px auto 0" @mouseup="onSelect"></PDF>
     </el-scrollbar>
@@ -10,7 +17,7 @@
 <script>
 import PDF from "@/components/PDF/PDF";
 import {ElMessage} from "element-plus";
-import {inject, ref, readonly} from "vue";
+import {inject, ref, readonly, toRef, watch, reactive} from "vue";
 import ToolBox from "@/views/reader/ToolBox";
 
 export default {
@@ -23,6 +30,11 @@ export default {
     const bus = inject('bus')
     const baseURL = inject("baseURL")
     const src = ref('')
+    const collapseShow = ref(false)
+    const readPath = reactive(
+      ["123", "456"]
+    )
+
     const onSelect = (e) => {
       console.log(e)
       if (!bus.isWatching || e.path[0].localName !== "span" || e.path[1].className !== "textLayer") {
@@ -39,6 +51,15 @@ export default {
         }
       }
     }
+    watch(toRef(bus, 'showCollapse'), () => {
+      collapseShow.value = bus.showCollapse;
+      if(bus.readPath != undefined && bus.readPath != null){
+        readPath.length = 0
+        bus.readPath.forEach(pathItem => {
+          readPath.push(pathItem)
+        });
+      }
+    })
     const getPDFPath = () => {
       axios.withCredentials = true;
       if (bus.main_pdf !== undefined) {
@@ -74,7 +95,9 @@ export default {
     })
     return {
       src,
-      onSelect
+      onSelect,
+      collapseShow,
+      readPath
     }
   }
 }

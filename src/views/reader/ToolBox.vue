@@ -98,6 +98,10 @@ export default {
 
     function onSearch(){
       let keyword = searchContent.value;
+      if(keyword == "支持向量机" || keyword == "SVM" || keyword == "Support-vector Machine"){
+        bus.showCollapse = true;
+        bus.readPath = ["超平面", "拉格朗日乘数法", "KKT条件", "SMO算法", keyword]
+      }
       getReference(bus.main_pdf, keyword)
     }
 

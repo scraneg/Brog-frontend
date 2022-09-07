@@ -53,13 +53,10 @@ export default {
 
     /** “发送验证邮件”按钮Click事件处理函数 */
     function sendVerifyEmail() {
-      axios.get('/auth/email_captcha', {
-        params: {
-          email: registerCredential.email
-        }
-      }).then((res) => {
+      let body = {email: registerCredential.email}
+      axios.post('/auth/gen_captcha', body).then((res) => {
         let res_body = res.data;
-        if (res_body.status === 'success') {
+        if (res_body.status === 1) {
           ElMessage.success('邮箱验证码发送成功！')
         } else {
           console.log(res_body);
@@ -73,23 +70,20 @@ export default {
     /** “注册”按钮Click事件处理函数 */
     function onRegister() {
       let req_body = {
-        'name': registerCredential.username,
+        'username': registerCredential.username,
         'email': registerCredential.email,
-        'pwd': registerCredential.password
+        'password': registerCredential.password,
+        'captcha': registerCredential.captcha
       };
 
-      axios.post('/auth/register', req_body, {
-        params: {
-          captcha: registerCredential.captcha
-        }
-      }).then((res) => {
+      axios.post('/auth/register', req_body).then((res) => {
         let resBody = res.data;
-        if (resBody.status === 'success') {
-          router.push('/profile_registry');
+        if (resBody.status === 1) {
+          router.push('/login');
         } else {
-          if (resBody.msg === 'nameCrash') {
+          if (resBody.status === 2) {
             ElMessage.error('注册失败！用户名已存在！');
-          } else if (resBody.msg === 'captcha error') {
+          } else if (resBody.status === 3) {
             ElMessage.error('注册失败！邮箱验证码错误！');
           } else if (resBody.msg === 'idCrashTooManyTimes') {
             ElMessage.error('注册失败！用户创建失败！');

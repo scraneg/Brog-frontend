@@ -26,7 +26,6 @@ import PDF from "@/components/PDF/PDF";
 import {inject, reactive, ref, watch, toRef} from "vue";
 import {useRouter} from "vue-router";
 import {Close, ArrowLeftBold} from "@element-plus/icons-vue";
-import {getRandomInt} from "element-plus/es/utils/util";
 
 export default {
   components: {
@@ -48,7 +47,7 @@ export default {
     })
     watch(toRef(bus, 'ref_materials'), (ref_materials) => {
       for (const material of ref_materials) {
-        const id = getRandomInt(1000000)
+        const id = material.mid
         tabs.push({
           id,
           src: baseURL + '/file/cache/' + material.filepath,
