@@ -58,6 +58,7 @@ export default {
       axios.post('/auth/login', reqBody).then((res) => {
         let resBody = res.data;
         if (resBody.status === 1) {
+          localStorage.setItem('name', loginCredential.username);
           if(loginCredential.rememberMe){
             localStorage.setItem('username', loginCredential.username);
             localStorage.setItem('password', loginCredential.password);

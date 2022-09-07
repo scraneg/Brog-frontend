@@ -96,8 +96,14 @@ export default {
     function onSearch(){
       let keyword = searchContent.value;
       if(keyword == "支持向量机" || keyword == "SVM" || keyword == "Support-vector Machine"){
+        let user = localStorage.getItem('name');
         bus.showCollapse = true;
-        bus.readPath = ["超平面", "拉格朗日乘数法", "KKT条件", "SMO算法", keyword]
+        if(user === 'test2'){
+          bus.readPath = ["线性回归", "分割超平面", "合叶损失", "梯度下降法", keyword]
+        }
+        else{
+          bus.readPath = ["超平面", "拉格朗日乘数法", "KKT条件", "SMO算法", keyword]
+        }
       }
       getReference(bus.main_pdf, keyword)
     }
