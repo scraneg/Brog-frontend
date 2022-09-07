@@ -19,10 +19,7 @@
       </el-col>
       <el-col :span="6"/>
       <el-col :span="4">
-        <el-input :prefix-icon="Search" v-model="searchContent"></el-input>
-      </el-col>
-      <el-col :span="2">
-        <el-button @click="onSearch">搜索</el-button>
+        <el-input :prefix-icon="Search" v-model="searchContent" @keydown.enter="onSearch"></el-input>
       </el-col>
       <el-col :span="6"/>
       <el-col :span="1">
