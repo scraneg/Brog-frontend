@@ -1,6 +1,6 @@
 <template>
   <div class="community">
-    <el-row style="padding: 20px">
+    <el-row style="padding: 20px;height: 10%">
       <el-col :span="16">
         <el-input :prefix-icon="Search" v-model="searchContent" placeholder="在社区中搜索"></el-input>
       </el-col>
@@ -9,27 +9,30 @@
       </el-col>
     </el-row>
 
-    <el-space direction="vertical">
-      <el-card v-for="(book_item, index) in bookList" :key="book_item.bid" :name="index" shadow="hover">
-        <el-row justify="space-between">
-          <el-col :span="5">
-            <el-image :src="book_item.cover">
-              <template #error>
-                <el-image src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg2.3png.com%2Fa1dc0b562b088c4101804105c5a1e019f44b.png&refer=http%3A%2F%2Fimg2.3png.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1652170214&t=41ae3c3127398d49b03cd6456ed71e42" />
-              </template>
-            </el-image>
-          </el-col>
-          <el-col :span="5">
-            <h3>{{ book_item.name }}</h3>
-            <p v-if="book_item.audited" style="color: green">已校对资源</p>
-            <p v-if="!book_item.audited" style="color: gray">未校对资源</p>
-          </el-col>
-          <el-col :span="5">
-            <el-button type="primary" @click="onAddToShelf(book_item)">添加到我的书架</el-button>
-          </el-col>
-        </el-row>
-      </el-card>
-    </el-space>
+    <el-scrollbar style="height: 90%;width: 80%">
+      <template v-for="(book_item, index) in bookList" :key="book_item.bid">
+        <el-card :name="index" shadow="hover">
+          <el-row justify="space-between">
+            <el-col :span="5">
+              <el-image :src="book_item.cover">
+                <template #error>
+                  <el-image
+                      src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg2.3png.com%2Fa1dc0b562b088c4101804105c5a1e019f44b.png&refer=http%3A%2F%2Fimg2.3png.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1652170214&t=41ae3c3127398d49b03cd6456ed71e42"/>
+                </template>
+              </el-image>
+            </el-col>
+            <el-col :span="5">
+              <h3>{{ book_item.name }}</h3>
+              <p v-if="book_item.audited" style="color: green">已校对资源</p>
+              <p v-if="!book_item.audited" style="color: gray">未校对资源</p>
+            </el-col>
+            <el-col :span="5">
+              <el-button type="primary" @click="onAddToShelf(book_item)">添加到我的书架</el-button>
+            </el-col>
+          </el-row>
+        </el-card>
+      </template>
+    </el-scrollbar>
 
     <el-dialog v-model="uploadDialogVisible" title="上传资源">
       <el-input v-model="uploadMeta.title" placeholder="资源标题" />

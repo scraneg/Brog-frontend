@@ -1,10 +1,10 @@
 <template>
   <el-container>
-    <el-header style="background-color: #ccd1ee;">
+    <el-header style="background-color: #ccd1ee;height: 10%">
       <brog-header></brog-header>
     </el-header>
-    <el-container>
-      <el-aside style="padding-bottom: 20px;padding-top: 20px">
+    <el-container style="height: 90%">
+      <el-aside style="width:25%;padding-bottom: 20px;padding-top: 20px">
         <brog-aside></brog-aside>
       </el-aside>
       <el-main>
